@@ -25,12 +25,13 @@ the current warnings:
 
 ```
 medivia E: ELF files outside of a valid path ('opt/').
-medivia W: ELF file ('opt/medivia/libfmod.so.11') has executable stack.
-medivia W: ELF file ('opt/medivia/libfmod.so.11') lacks FULL RELRO, check LDFLAGS.
+medivia W: ELF file ('opt/medivia/libfmod.so.12') has executable stack.
+medivia W: ELF file ('opt/medivia/libfmod.so.12') lacks FULL RELRO, check LDFLAGS.
 medivia W: ELF file ('opt/medivia/medivia') lacks FULL RELRO, check LDFLAGS.
 medivia W: ELF file ('opt/medivia/medivia') lacks PIE.
 medivia E: unknown is not a common license (it's not in /usr/share/licenses/common/)
-medivia W: Referenced library 'libfmod.so.11' is an uninstalled dependency
+medivia W: Referenced library 'libfmod.so.12' is an uninstalled dependency
+medivia W: Unused shared library '/usr/lib/librt.so.1' by file ('opt/medivia/libfmod.so.12')
 ```
 
 This is my first package, so any criticism and suggestions is appreciated.

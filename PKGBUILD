@@ -1,29 +1,33 @@
 # Maintainer: Igor Deyashkin <igor_deyawka@mail.ru>
 pkgname="medivia"
-pkgver="2.9.2"
+pkgver="4.10"
 pkgrel=0
 pkgdesc="Client for medivia.online mmorpg server."
-arch=('i686' 'x86_64')
+arch=('x86_64')
 url="https://medivia.online/download"
 # I am not sure what license is used
 license=('unknown')
-depends_x86_64=('lib32-libglvnd')
-depends_i686=('libglvnd')
-makedepends=('chrpath')
-source=("$pkgname-$pkgver.tar.gz::https://medivia.online/uploads/downloads/medivia-$pkgver-linux-32bits.tar.gz"
+# depends_x86_64=('lib32-libglvnd')
+depends=('libglvnd')
+makedepends=(
+    'chrpath'
+    'unzip'
+)
+
+source=("$pkgname-$pkgver.zip::https://download.medivia.online/linux-build.zip"
         "$pkgname.desktop")
 
 # The archive does not containing root folder in it. I unextract it later on build stage into separate subfolder.
-noextract=("$pkgname-$pkgver.tar.gz")
+noextract=("$pkgname-$pkgver.zip")
 
 # autofill using updpkgsums
-md5sums=('a15fe61553e4d26656c393cde0897291'
-         '2791be26444cdf1b14d8a49736a6bbb9')
+md5sums=('6319b15d7f7438d8de5cf25051142df0'
+         'e8a4875476e9d4db1ad862a188bf997e')
 
 prepare() {
     mkdir -p "$pkgname-$pkgver"
-    bsdtar -xzf "$pkgname-$pkgver.tar.gz" -C "$pkgname-$pkgver"
-
+    # -u is for supress the replacement questions in the repetative runs
+    unzip -u "$pkgname-$pkgver.zip" -d "$pkgname-$pkgver"
     # Rpath of the binary is "RPATH=$ORIGIN:/usr/local/lib:" and I replace it for just "RPATH=$ORIGIN" because we need
     # $ORIGIN to search for the libfmod.so.11 included in the package in the executable directory.
 
@@ -34,7 +38,7 @@ prepare() {
     # > software there). A simple fix would be to delete the RPATH from the binary using "chrpath" or "patchelf"
     # > commands, after the build, but before the release. The /usr/local/lib is insecure and don't
 
-    chrpath -r '$ORIGIN' "$pkgname-$pkgver/medivia"
+    # chrpath -r '$ORIGIN' "$pkgname-$pkgver/medivia"
 }
 
 package() {
@@ -42,6 +46,9 @@ package() {
     mkdir -p "$pkgdir/usr/bin"
 
     cp -Rv "$srcdir/$pkgname-$pkgver" "$pkgdir/opt/$pkgname"
+    # make medivia binary executable
+    install -Dm755 "${srcdir}/$pkgname-$pkgver/medivia" "$pkgdir/opt/$pkgname/medivia"
+    # chmod ago+x "/opt/$pkgname/medivia"
 
     install -Dm644 "$srcdir/$pkgname.desktop"    "$pkgdir/usr/share/applications/$pkgname.desktop"
 
